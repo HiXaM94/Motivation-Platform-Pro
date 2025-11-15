@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Motivation Hub Pro | Advanced Daily Motivation Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body>
+    <!-- Animated Background -->
+    <div class="bg-animation"></div>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+      <button class="toggle-btn" id="themeToggle">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+      <div class="notification-title" id="notificationTitle">Success!</div>
+      <div class="notification-message" id="notificationMessage">
+        Your action was completed successfully.
+      </div>
+    </div>
+
+    <!-- Media Modal -->
+    <div class="modal" id="mediaModal">
+      <div class="modal-content">
+        <button class="modal-close" id="modalClose">&times;</button>
+        <h2 class="modal-title" id="modalTitle">Media Title</h2>
+        <img src="" alt="" class="modal-media" id="modalMedia" />
+        <p class="modal-description" id="modalDescription">
+          Media description goes here.
+        </p>
+        <div class="modal-actions">
+          <button class="btn btn-primary" id="modalWatchBtn">
+            <i class="fas fa-play"></i> Watch Now
+          </button>
+          <button class="btn btn-secondary" id="modalSaveBtn">
+            <i class="fas fa-bookmark"></i> Save
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Goals Management Modal -->
+    <div class="modal" id="goalsManagementModal">
+      <div class="modal-content">
+        <button class="modal-close" id="goalsModalClose">&times;</button>
+        <h2 class="modal-title">Goals Management</h2>
+
+        <div class="management-tabs">
+          <button class="tab-btn active" data-tab="deleted">
+            Deleted Goals
+          </button>
+          <button class="tab-btn" data-tab="export">Export/Import</button>
+          <button class="tab-btn" data-tab="categories">Categories</button>
+        </div>
+
+        <div class="tab-content active" id="deletedTab">
+          <h3>Recently Deleted Goals</h3>
+          <div id="deletedGoalsList" class="deleted-goals-list">
+            <!-- Deleted goals will appear here -->
+          </div>
+          <div class="management-actions">
+            <button class="btn btn-secondary" id="restoreAllBtn">
+              Restore All
+            </button>
+            <button class="btn btn-danger" id="permanentDeleteBtn">
+              Empty Trash
+            </button>
+          </div>
+        </div>
+
+        <div class="tab-content" id="exportTab">
+          <h3>Export Goals</h3>
+          <textarea
+            id="exportData"
+            class="export-textarea"
+            readonly
+            placeholder="Your goals data will appear here..."
+          ></textarea>
+          <button class="btn btn-primary" id="exportBtn">
+            <i class="fas fa-download"></i> Export Goals
+          </button>
+
+          <h3>Import Goals</h3>
+          <textarea
+            id="importData"
+            class="export-textarea"
+            placeholder="Paste your goals data here..."
+          ></textarea>
+          <button class="btn btn-accent" id="importBtn">
+            <i class="fas fa-upload"></i> Import Goals
+          </button>
+        </div>
+
+        <div class="tab-content" id="categoriesTab">
+          <h3>Goal Categories</h3>
+          <div class="category-management">
+            <div class="add-category">
+              <input
+                type="text"
+                id="newCategoryInput"
+                placeholder="New category name"
+              />
+              <button class="btn btn-primary" id="addCategoryBtn">
+                Add Category
+              </button>
+            </div>
+            <div id="categoriesList" class="categories-list">
+              <!-- Categories will appear here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Chat Bot -->
+    <!-- Enhanced Chat Bot -->
+    <div class="chat-bot-container" id="chatBotContainer">
+      <div class="chat-bot-header">
+        <div class="bot-info">
+          <div class="bot-avatar">🤖</div>
+          <div class="bot-details">
+            <h3>Motivation Assistant</h3>
+            <span class="bot-status">Online • Ready to help</span>
+          </div>
+        </div>
+        <div class="chat-controls">
+          <button class="chat-close-btn" id="chatCloseBtn">&times;</button>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="chatMessages">
+        <div class="bot-message">
+          <div class="message-avatar">🤖</div>
+          <div class="message-content">
+            <p>Hello! I'm your Motivation Assistant! 😊</p>
+            <p>
+              I'm here to help you stay motivated, track your progress, and
+              maintain a positive mindset.
+            </p>
+            <div class="message-time" id="currentTime">Just now</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-questions" id="quickQuestions">
+        <button class="quick-question-btn" data-question="I need motivation">
+          💪 Get Motivated
+        </button>
+        <button class="quick-question-btn" data-question="I'm feeling stressed">
+          😥 Stress Help
+        </button>
+        <button class="quick-question-btn" data-question="Help with goals">
+          🎯 Goal Support
+        </button>
+      </div>
+
+      <div class="chat-input-container">
+        <div class="input-wrapper">
+          <input
+            type="text"
+            id="chatInput"
+            placeholder="Type your message here..."
+          />
+          <button id="chatSendBtn" class="send-btn">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button class="chat-toggle-btn" id="chatToggleBtn">
+      <i class="fas fa-robot"></i>
+    </button>
+
+    <main class="container">
+      <header>
+        <h1>Motivation Hub Pro</h1>
+        <p class="subtitle">
+          Your daily dose of inspiration, wisdom, and progress tracking
+        </p>
+      </header>
+
+      <!-- Enhanced Stats Dashboard -->
+      <section class="dashboard">
+        <div class="stats-container">
+          <div class="stat-card">
+            <div class="stat-value" id="streakCount">7</div>
+            <div class="stat-label">Day Streak</div>
+            <div class="stat-trend up">+2</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="goalsCompleted">12</div>
+            <div class="stat-label">Goals Completed</div>
+            <div class="stat-trend up">+3</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="productivityScore">84%</div>
+            <div class="stat-label">Productivity</div>
+            <div class="stat-trend down">-5%</div>
+          </div>
+        </div>
+
+        <!-- Daily Challenge -->
+        <div class="daily-challenge">
+          <div class="challenge-header">
+            <div class="challenge-title">Daily Challenge</div>
+            <div class="challenge-badge">+10 XP</div>
+          </div>
+          <div class="challenge-content">
+            <p class="challenge-text" id="dailyChallengeText">
+              Take a 10-minute walk outside and reflect on one thing you're
+              grateful for.
+            </p>
+          </div>
+          <div class="challenge-stats">
+            <div class="challenge-stat">
+              <div class="challenge-stat-value" id="challengeCompletion">
+                65%
+              </div>
+              <div class="challenge-stat-label">Completed</div>
+            </div>
+            <div class="challenge-stat">
+              <div class="challenge-stat-value" id="challengeParticipants">
+                1.2K
+              </div>
+              <div class="challenge-stat-label">Participants</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Enhanced Goals Section -->
+      <section id="goals" class="card">
+        <div class="section-header">
+          <h2><i class="fas fa-bullseye"></i> My Objectives</h2>
+          <div class="section-actions">
+            <button class="btn btn-sm btn-accent" id="manageGoalsBtn">
+              <i class="fas fa-cog"></i> Manage
+            </button>
+            <button class="btn btn-sm btn-primary" id="addCategoryFilterBtn">
+              <i class="fas fa-filter"></i> Filter
+            </button>
+          </div>
+        </div>
+
+        <!-- Goals Filter -->
+        <div class="goals-filter" id="goalsFilter">
+          <select id="categoryFilter" class="filter-select">
+            <option value="all">All Categories</option>
+          </select>
+          <select id="statusFilter" class="filter-select">
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+            <option value="in-progress">In Progress</option>
+          </select>
+          <select id="priorityFilter" class="filter-select">
+            <option value="all">All Priorities</option>
+            <option value="high">High Priority</option>
+            <option value="medium">Medium Priority</option>
+            <option value="low">Low Priority</option>
+          </select>
+        </div>
+
+        <!-- Search Bar for Goals -->
+        <div class="search-container">
+          <div class="search-input-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input
+              type="text"
+              id="goalsSearch"
+              class="search-input"
+              placeholder="Search goals..."
+            />
+            <button class="search-clear-btn" id="goalsSearchClear">
+              &times;
+            </button>
+          </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div id="progressContainer">
+          <p>Overall Progress:</p>
+          <div class="progress-bar-wrapper">
+            <div id="progressBar"></div>
+          </div>
+          <div id="progressPercentage">0%</div>
+        </div>
+
+        <!-- Goals List -->
+        <ul id="goalList"></ul>
+
+        <!-- Enhanced Goal Input -->
+        <div class="goal-input-container">
+          <input
+            id="goalInput"
+            type="text"
+            placeholder="Add a new objective..."
+          />
+          <select id="goalCategory" class="category-select">
+            <option value="general">General</option>
+          </select>
+          <select id="goalPriority" class="priority-select">
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="low">Low</option>
+          </select>
+          <button id="addGoal" aria-label="Add Goal">
+            <i class="fas fa-plus"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- Focus Timer Section -->
+      <section class="card">
+        <h2><i class="fas fa-clock"></i> Focus Timer</h2>
+        <div class="timer-section">
+          <div class="timer-display" id="timerDisplay">25:00</div>
+          <div class="timer-controls">
+            <button class="btn btn-primary" id="startTimer">
+              <i class="fas fa-play"></i> Start
+            </button>
+            <button class="btn btn-accent" id="pauseTimer">
+              <i class="fas fa-pause"></i> Pause
+            </button>
+            <button class="btn btn-secondary" id="resetTimer">
+              <i class="fas fa-redo"></i> Reset
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="advice" class="card">
+        <h2><i class="fas fa-quote-left"></i> Quote of the Day</h2>
+        <p id="adviceText">Click the button below for a piece of advice...</p>
+        <div class="quote-author" id="adviceAuthor"></div>
+        <button id="newAdvice" class="btn btn-primary">
+          <i class="fas fa-sync-alt"></i> Get New Advice
+        </button>
+      </section>
+
+      <!-- Daily Affirmations -->
+      <section class="card">
+        <h2><i class="fas fa-star"></i> Daily Affirmations</h2>
+        <div class="affirmation-card">
+          <p class="affirmation-text" id="affirmationText">
+            I am capable of achieving my goals and creating positive change in
+            my life.
+          </p>
+          <button id="newAffirmation" class="btn btn-accent">
+            <i class="fas fa-sync-alt"></i> New Affirmation
+          </button>
+        </div>
+      </section>
+
+      <!-- Trending Articles Section -->
+      <section id="trending-articles" class="card">
+        <h2><i class="fas fa-newspaper"></i> Trending Articles</h2>
+        <div id="articleGrid" class="article-grid">
+          <!-- Articles will be injected here by JS -->
+        </div>
+      </section>
+
+      <section id="inspiration" class="card">
+        <h2><i class="fas fa-fire"></i> Inspiration Station</h2>
+
+        <div class="media-filter">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="video">Videos</button>
+          <button class="filter-btn" data-filter="podcast">Podcasts</button>
+          <button class="filter-btn" data-filter="compilation">
+            Compilations
+          </button>
+          <button class="filter-btn" data-filter="quotes">Quotes</button>
+          <button class="filter-btn" data-filter="interviews">
+            Interviews
+          </button>
+          <button class="filter-btn" data-filter="morning">
+            Morning Motivation
+          </button>
+          <button class="filter-btn" data-filter="business">
+            Business Motivation
+          </button>
+          <button class="filter-btn" data-filter="gym">Gym Motivation</button>
+          <button class="filter-btn" data-filter="wisdom">
+            Wisdom & Philosophy
+          </button>
+          <button class="filter-btn" data-filter="celebrities">
+            Celebrities
+          </button>
+        </div>
+
+        <div id="mediaGrid" class="media-grid">
+          <!-- Media items will be injected here by JS -->
+        </div>
+      </section>
+
+      <!-- Journal Section -->
+      <section class="card">
+        <h2><i class="fas fa-book"></i> Daily Journal</h2>
+
+        <!-- Search Bar for Journal -->
+        <div class="search-container">
+          <div class="search-input-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input
+              type="text"
+              id="journalSearch"
+              class="search-input"
+              placeholder="Search journal entries..."
+            />
+            <button class="search-clear-btn" id="journalSearchClear">
+              &times;
+            </button>
+          </div>
+        </div>
+
+        <textarea
+          class="journal-input"
+          id="journalInput"
+          placeholder="What's on your mind today? Write about your thoughts, goals, achievements, or anything you'd like to reflect on..."
+        ></textarea>
+        <div class="journal-actions">
+          <button id="saveJournal" class="btn btn-primary">
+            <i class="fas fa-save"></i> Save Entry
+          </button>
+          <button id="clearJournal" class="btn btn-secondary">
+            <i class="fas fa-eraser"></i> Clear
+          </button>
+        </div>
+
+        <div id="journalEntries" class="journal-entries-container">
+          <!-- Journal entries will be added here -->
+        </div>
+      </section>
+
+      <!-- Achievements Section -->
+      <section class="card">
+        <h2><i class="fas fa-trophy"></i> Achievements</h2>
+        <div class="badges-container">
+          <div
+            class="badge earned"
+            title="First Quote - Read your first motivational quote"
+          >
+            <i class="fas fa-quote-right"></i>
+          </div>
+          <div
+            class="badge earned"
+            title="Goal Setter - Create your first goal"
+          >
+            <i class="fas fa-bullseye"></i>
+          </div>
+          <div
+            class="badge earned"
+            title="Week Warrior - Maintain a 7-day streak"
+          >
+            <i class="fas fa-fire"></i>
+          </div>
+          <div
+            class="badge locked"
+            title="Month Master - Maintain a 30-day streak"
+          >
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <div class="badge locked" title="Goal Crusher - Complete 10 goals">
+            <i class="fas fa-flag-checkered"></i>
+          </div>
+          <div
+            class="badge locked"
+            title="Meditation Master - Complete 10 focus sessions"
+          >
+            <i class="fas fa-brain"></i>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- JavaScript Files -->
+    <!-- Remove all other script tags and add only this one -->
+    <script src="js/app.js"></script>
+
+    <script>
+      // Initialize the application when DOM is loaded
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("DOM loaded, initializing app...");
+        new MotivationApp();
+      });
+    </script>
+    <!-- Add this right before closing </body> tag for testing -->
+   <script>
+// Temporary debug script - remove after testing
+console.log('🔧 Debug script loaded');
+
+// Test if chat elements exist
+const chatBtn = document.getElementById('chatToggleBtn');
+const chatContainer = document.getElementById('chatBotContainer');
+
+console.log('🔧 Chat button found:', !!chatBtn);
+console.log('🔧 Chat container found:', !!chatContainer);
+
+if (chatBtn) {
+    // Add a test click handler
+    chatBtn.addEventListener('click', function(e) {
+        console.log('🔧 DEBUG: Chat button clicked directly!');
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (chatContainer) {
+            const isOpen = chatContainer.classList.contains('open');
+            console.log('🔧 Current state:', isOpen ? 'OPEN' : 'CLOSED');
+            
+            if (isOpen) {
+                chatContainer.classList.remove('open');
+                chatContainer.style.display = 'none';
+            } else {
+                chatContainer.classList.add('open');
+                chatContainer.style.display = 'flex';
+            }
+            
+            console.log('🔧 New state:', !isOpen ? 'OPEN' : 'CLOSED');
+        }
+    });
+    
+    // Add visual indicator
+    chatBtn.style.border = '3px solid yellow';
+}
+</script>
+  </body>
+</html>
