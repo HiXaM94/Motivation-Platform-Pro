@@ -7,7 +7,7 @@ class GoalsManager {
     }
 
     // Goals Management
-    addGoal(text, category = 'general', priority = 'medium') {
+    addGoal(text, category = 'general', priority = 'medium', options = {}) {
         const goal = {
             id: Date.now().toString(),
             text: text.trim(),
@@ -15,6 +15,11 @@ class GoalsManager {
             priority: priority,
             progress: 0,
             completed: false,
+            subtasks: options.subtasks || [],
+            dueDate: options.dueDate || null,
+            recurring: options.recurring || null, // { frequency: 'daily|weekly|monthly', interval: 1 }
+            tags: options.tags || [],
+            notes: options.notes || '',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
@@ -89,6 +94,144 @@ class GoalsManager {
         }
     }
 
+    // Subtasks Management
+    addSubtask(goalId, subtaskText) {
+        const goal = this.getGoal(goalId);
+        if (goal) {
+            if (!goal.subtasks) goal.subtasks = [];
+            
+            const subtask = {
+                id: `${goalId}_sub_${Date.now()}`,
+                text: subtaskText.trim(),
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+            
+            goal.subtasks.push(subtask);
+            this.updateGoal(goalId, { subtasks: goal.subtasks });
+            this.updateGoalProgressFromSubtasks(goalId);
+            return subtask;
+        }
+        return null;
+    }
+
+    toggleSubtask(goalId, subtaskId) {
+        const goal = this.getGoal(goalId);
+        if (goal && goal.subtasks) {
+            const subtask = goal.subtasks.find(st => st.id === subtaskId);
+            if (subtask) {
+                subtask.completed = !subtask.completed;
+                this.updateGoal(goalId, { subtasks: goal.subtasks });
+                this.updateGoalProgressFromSubtasks(goalId);
+            }
+        }
+    }
+
+    deleteSubtask(goalId, subtaskId) {
+        const goal = this.getGoal(goalId);
+        if (goal && goal.subtasks) {
+            goal.subtasks = goal.subtasks.filter(st => st.id !== subtaskId);
+            this.updateGoal(goalId, { subtasks: goal.subtasks });
+            this.updateGoalProgressFromSubtasks(goalId);
+        }
+    }
+
+    updateGoalProgressFromSubtasks(goalId) {
+        const goal = this.getGoal(goalId);
+        if (goal && goal.subtasks && goal.subtasks.length > 0) {
+            const completedSubtasks = goal.subtasks.filter(st => st.completed).length;
+            const progress = Math.round((completedSubtasks / goal.subtasks.length) * 100);
+            this.updateGoal(goalId, { 
+                progress,
+                completed: progress === 100
+            });
+        }
+    }
+
+    // Bulk Actions
+    bulkComplete(goalIds) {
+        goalIds.forEach(id => {
+            this.updateGoal(id, { completed: true, progress: 100 });
+        });
+        return { success: true, count: goalIds.length };
+    }
+
+    bulkDelete(goalIds) {
+        goalIds.forEach(id => this.deleteGoal(id));
+        return { success: true, count: goalIds.length };
+    }
+
+    bulkRestore(goalIds) {
+        goalIds.forEach(id => this.restoreGoal(id));
+        return { success: true, count: goalIds.length };
+    }
+
+    // Duplicate Goal
+    duplicateGoal(id) {
+        const goal = this.getGoal(id);
+        if (goal) {
+            const duplicate = {
+                ...goal,
+                id: Date.now().toString(),
+                text: `${goal.text} (Copy)`,
+                completed: false,
+                progress: 0,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            if (duplicate.subtasks) {
+                duplicate.subtasks = duplicate.subtasks.map(st => ({
+                    ...st,
+                    id: `${duplicate.id}_sub_${Date.now()}_${Math.random()}`,
+                    completed: false
+                }));
+            }
+            
+            this.goals.push(duplicate);
+            this.saveGoals();
+            return duplicate;
+        }
+        return null;
+    }
+
+    // Sorting
+    sortGoals(sortBy = 'updatedAt', direction = 'desc') {
+        const sorted = [...this.goals];
+        
+        sorted.sort((a, b) => {
+            let comparison = 0;
+            
+            switch (sortBy) {
+                case 'createdAt':
+                case 'updatedAt':
+                    comparison = new Date(a[sortBy]) - new Date(b[sortBy]);
+                    break;
+                case 'priority':
+                    const priorityOrder = { high: 3, medium: 2, low: 1 };
+                    comparison = priorityOrder[a.priority] - priorityOrder[b.priority];
+                    break;
+                case 'progress':
+                    comparison = a.progress - b.progress;
+                    break;
+                case 'dueDate':
+                    if (!a.dueDate) return 1;
+                    if (!b.dueDate) return -1;
+                    comparison = new Date(a.dueDate) - new Date(b.dueDate);
+                    break;
+                case 'alphabetical':
+                    comparison = a.text.localeCompare(b.text);
+                    break;
+                default:
+                    comparison = new Date(b.updatedAt) - new Date(a.updatedAt);
+            }
+            
+            return direction === 'desc' ? -comparison : comparison;
+        });
+        
+        return sorted;
+    }
+
     // Filtering and Search
     filterGoals(filters = {}) {
         let filtered = [...this.goals];
@@ -115,7 +258,62 @@ class GoalsManager {
             filtered = filtered.filter(goal => goal.priority === filters.priority);
         }
 
+        if (filters.dueDate) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            filtered = filtered.filter(goal => {
+                if (!goal.dueDate) return false;
+                const dueDate = new Date(goal.dueDate);
+                dueDate.setHours(0, 0, 0, 0);
+                
+                switch (filters.dueDate) {
+                    case 'overdue':
+                        return dueDate < today && !goal.completed;
+                    case 'today':
+                        return dueDate.getTime() === today.getTime();
+                    case 'week':
+                        const weekFromNow = new Date(today);
+                        weekFromNow.setDate(today.getDate() + 7);
+                        return dueDate >= today && dueDate <= weekFromNow;
+                    default:
+                        return true;
+                }
+            });
+        }
+
+        // Apply sorting if specified
+        if (filters.sortBy) {
+            return this.sortGoals(filters.sortBy, filters.sortDirection || 'desc').filter(g => filtered.includes(g));
+        }
+
         return filtered.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+    }
+
+    // Calendar View Data
+    getGoalsForCalendar() {
+        return this.goals
+            .filter(goal => goal.dueDate)
+            .map(goal => ({
+                id: goal.id,
+                title: goal.text,
+                date: goal.dueDate,
+                completed: goal.completed,
+                priority: goal.priority,
+                category: goal.category
+            }));
+    }
+
+    getGoalsForDate(dateString) {
+        const targetDate = new Date(dateString);
+        targetDate.setHours(0, 0, 0, 0);
+        
+        return this.goals.filter(goal => {
+            if (!goal.dueDate) return false;
+            const goalDate = new Date(goal.dueDate);
+            goalDate.setHours(0, 0, 0, 0);
+            return goalDate.getTime() === targetDate.getTime();
+        });
     }
 
     searchGoals(query) {
