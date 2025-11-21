@@ -111,7 +111,7 @@ async function fetchFromYouTube(apiKey, limit = 10, category = '') {
       id: item.id.videoId,
       title: item.snippet.title,
       description: item.snippet.description,
-      thumbnail: item.snippet.thumbnails.medium.url,
+      thumbnail: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url || 'https://via.placeholder.com/320x180?text=Video',
       url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
       source: 'YouTube',
       publishedAt: item.snippet.publishedAt,

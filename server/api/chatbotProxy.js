@@ -20,6 +20,20 @@
  * }
  */
 
+// Import OpenAI at module level for better performance
+let OpenAI = null;
+let openaiInstance = null;
+
+async function getOpenAIInstance(apiKey) {
+  if (!OpenAI) {
+    OpenAI = (await import('openai')).default;
+  }
+  if (!openaiInstance || openaiInstance.apiKey !== apiKey) {
+    openaiInstance = new OpenAI({ apiKey });
+  }
+  return openaiInstance;
+}
+
 // Mock responses for development without API keys
 const MOCK_RESPONSES = [
   "That's a great goal! Breaking it down into smaller steps can help you achieve it more effectively.",
@@ -70,10 +84,7 @@ export default async function handler(req, res) {
     }
 
     // Use OpenAI API
-    const OpenAI = (await import('openai')).default;
-    const openai = new OpenAI({
-      apiKey: apiKey
-    });
+    const openai = await getOpenAIInstance(apiKey);
 
     // Build messages array for OpenAI
     const messages = [

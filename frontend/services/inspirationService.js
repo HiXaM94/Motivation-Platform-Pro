@@ -177,6 +177,7 @@ class InspirationService {
    * @returns {Object} Formatted item with additional display properties
    */
   formatForDisplay(item) {
+    const description = item.description || '';
     return {
       ...item,
       formattedDate: new Date(item.publishedAt).toLocaleDateString('en-US', {
@@ -184,9 +185,9 @@ class InspirationService {
         month: 'short',
         day: 'numeric'
       }),
-      shortDescription: item.description.length > 150 
-        ? item.description.substring(0, 150) + '...'
-        : item.description
+      shortDescription: description.length > 150 
+        ? description.substring(0, 150) + '...'
+        : description
     };
   }
 
