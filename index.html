@@ -492,7 +492,13 @@
     </main>
 
     <!-- JavaScript Files -->
-    <!-- Remove all other script tags and add only this one -->
+    <!-- Load service modules first -->
+    <script src="js/services/dataManager.js"></script>
+    <script src="js/services/inspirationProvider.js"></script>
+    <script src="js/services/dailyJourneyManager.js"></script>
+    <script src="js/components/enhancedChatbot.js"></script>
+    
+    <!-- Load main application -->
     <script src="js/app.js"></script>
 
     <script>
@@ -502,44 +508,5 @@
         new MotivationApp();
       });
     </script>
-    <!-- Add this right before closing </body> tag for testing -->
-   <script>
-// Temporary debug script - remove after testing
-console.log('🔧 Debug script loaded');
-
-// Test if chat elements exist
-const chatBtn = document.getElementById('chatToggleBtn');
-const chatContainer = document.getElementById('chatBotContainer');
-
-console.log('🔧 Chat button found:', !!chatBtn);
-console.log('🔧 Chat container found:', !!chatContainer);
-
-if (chatBtn) {
-    // Add a test click handler
-    chatBtn.addEventListener('click', function(e) {
-        console.log('🔧 DEBUG: Chat button clicked directly!');
-        e.preventDefault();
-        e.stopPropagation();
-        
-        if (chatContainer) {
-            const isOpen = chatContainer.classList.contains('open');
-            console.log('🔧 Current state:', isOpen ? 'OPEN' : 'CLOSED');
-            
-            if (isOpen) {
-                chatContainer.classList.remove('open');
-                chatContainer.style.display = 'none';
-            } else {
-                chatContainer.classList.add('open');
-                chatContainer.style.display = 'flex';
-            }
-            
-            console.log('🔧 New state:', !isOpen ? 'OPEN' : 'CLOSED');
-        }
-    });
-    
-    // Add visual indicator
-    chatBtn.style.border = '3px solid yellow';
-}
-</script>
   </body>
 </html>
