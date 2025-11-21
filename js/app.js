@@ -388,6 +388,12 @@ class MotivationApp {
         this.themeManager = new ThemeManager();
         this.focusTimer = new FocusTimer();
         
+        // New service managers
+        this.dataManager = new DataManager();
+        this.inspirationService = new InspirationService();
+        this.dailyJourneyManager = new DailyJourneyManager();
+        this.enhancedChatbot = null; // Will be initialized after DOM cache
+        
         this.currentFilters = {
             category: 'all',
             status: 'all',
@@ -402,8 +408,12 @@ class MotivationApp {
 
     init() {
         this.cacheDOM();
+        this.initializeEnhancedChatbot();
+        this.initializeInspirationService();
         this.bindAllEvents();
         this.initialRender();
+        this.setupAutoBackup();
+        this.loadTodayData();
         console.log('✅ MotivationApp initialized');
     }
 
@@ -649,8 +659,81 @@ class MotivationApp {
             if (e.target.classList.contains('tab-btn')) {
                 const tabName = e.target.dataset.tab;
                 this.switchManagementTab(tabName);
+                
+                // Load data when switching to export tab
+                if (tabName === 'export') {
+                    this.loadExportData();
+                }
             }
         });
+        
+        // Export button
+        const exportBtn = document.getElementById('exportBtn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', () => {
+                this.exportAllData();
+            });
+        }
+        
+        // Import button
+        const importBtn = document.getElementById('importBtn');
+        if (importBtn) {
+            importBtn.addEventListener('click', () => {
+                const importData = document.getElementById('importData');
+                if (importData && importData.value.trim()) {
+                    this.importData(importData.value.trim());
+                }
+            });
+        }
+        
+        // Restore all button
+        const restoreAllBtn = document.getElementById('restoreAllBtn');
+        if (restoreAllBtn) {
+            restoreAllBtn.addEventListener('click', () => this.restoreAllGoals());
+        }
+        
+        // Permanent delete button
+        const permanentDeleteBtn = document.getElementById('permanentDeleteBtn');
+        if (permanentDeleteBtn) {
+            permanentDeleteBtn.addEventListener('click', () => this.emptyTrash());
+        }
+    }
+    
+    loadExportData() {
+        const exportData = document.getElementById('exportData');
+        if (exportData) {
+            const data = this.dataManager.exportData();
+            exportData.value = JSON.stringify(data, null, 2);
+        }
+    }
+    
+    restoreAllGoals() {
+        const deletedGoals = this.goalsManager.deletedGoals;
+        if (deletedGoals.length === 0) {
+            this.showNotification('No Goals', 'There are no deleted goals to restore');
+            return;
+        }
+        
+        if (confirm(`Restore all ${deletedGoals.length} deleted goals?`)) {
+            const ids = deletedGoals.map(g => g.id);
+            this.goalsManager.bulkRestore(ids);
+            this.renderGoals();
+            this.showNotification('Restored', 'All goals have been restored');
+        }
+    }
+    
+    emptyTrash() {
+        const deletedGoals = this.goalsManager.deletedGoals;
+        if (deletedGoals.length === 0) {
+            this.showNotification('Trash Empty', 'There are no deleted goals');
+            return;
+        }
+        
+        if (confirm(`Permanently delete all ${deletedGoals.length} goals? This cannot be undone.`)) {
+            this.goalsManager.deletedGoals = [];
+            this.goalsManager.saveDeletedGoals();
+            this.showNotification('Trash Emptied', 'All deleted goals have been permanently removed');
+        }
     }
 
     bindOtherEvents() {
@@ -687,9 +770,16 @@ class MotivationApp {
         const message = this.chatInput.value.trim();
         if (!message) return;
         
-        this.addUserMessage(message);
         this.chatInput.value = '';
-        this.generateBotResponse(message);
+        
+        // Use enhanced chatbot if available
+        if (this.enhancedChatbot) {
+            this.enhancedChatbot.sendMessage(message);
+        } else {
+            // Fallback to basic implementation
+            this.addUserMessage(message);
+            this.generateBotResponse(message);
+        }
     }
 
     addUserMessage(message) {
@@ -1282,7 +1372,148 @@ class MotivationApp {
     showNotification(title, message, duration = 3000) {
         // Simple notification implementation
         console.log(`Notification: ${title} - ${message}`);
-        // You can enhance this with a proper notification system
+        
+        // Show toast notification
+        const notification = document.getElementById('notification');
+        const notificationTitle = document.getElementById('notificationTitle');
+        const notificationMessage = document.getElementById('notificationMessage');
+        
+        if (notification && notificationTitle && notificationMessage) {
+            notificationTitle.textContent = title;
+            notificationMessage.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, duration);
+        }
+    }
+
+    // New Service Integration Methods
+    initializeEnhancedChatbot() {
+        this.enhancedChatbot = new EnhancedChatbot({
+            container: this.chatBotContainer,
+            messagesContainer: this.chatMessages,
+            inputElement: this.chatInput,
+            onMessage: (userMsg, botMsg) => {
+                console.log('Chat interaction:', userMsg);
+            }
+        });
+        
+        // Handle chatbot action events
+        document.addEventListener('chatbot:action', (e) => {
+            this.handleChatbotAction(e.detail);
+        });
+        
+        // Handle quick reply and CTA clicks
+        if (this.chatMessages) {
+            this.chatMessages.addEventListener('click', (e) => {
+                if (e.target.classList.contains('quick-reply-btn')) {
+                    const reply = e.target.dataset.reply;
+                    if (reply && this.chatInput) {
+                        this.chatInput.value = reply;
+                        this.sendEnhancedMessage();
+                    }
+                } else if (e.target.classList.contains('rich-card-cta') || e.target.closest('.rich-card-cta')) {
+                    const btn = e.target.classList.contains('rich-card-cta') ? e.target : e.target.closest('.rich-card-cta');
+                    const action = btn.dataset.action;
+                    const value = btn.dataset.value;
+                    this.enhancedChatbot.handleCtaClick(action, value);
+                }
+            });
+        }
+        
+        console.log('✅ Enhanced chatbot initialized');
+    }
+
+    initializeInspirationService() {
+        this.inspirationService.initialize();
+        
+        // Subscribe to new inspiration items
+        this.inspirationService.subscribe((newItems) => {
+            if (newItems.length > 0) {
+                this.showNotification(
+                    'New Inspiration Available!',
+                    `${newItems.length} new ${newItems.length === 1 ? 'item' : 'items'} added to inspiration feed`
+                );
+            }
+        });
+        
+        console.log('✅ Inspiration service initialized');
+    }
+
+    setupAutoBackup() {
+        // Set up automatic backups
+        this.dataManager.setupAutoBackup();
+        console.log('✅ Auto-backup enabled');
+    }
+
+    loadTodayData() {
+        // Load today's checklist and mood
+        const todayChecklist = this.dailyJourneyManager.getTodayChecklist();
+        const todayMood = this.dailyJourneyManager.getTodayMood();
+        
+        console.log('✅ Today\'s data loaded:', {
+            checklist: todayChecklist,
+            mood: todayMood
+        });
+    }
+
+    handleChatbotAction(detail) {
+        const { action, value } = detail;
+        
+        switch (action) {
+            case 'create_goal':
+                if (this.goalInput) {
+                    this.goalInput.focus();
+                    this.goalInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                break;
+            case 'export_data':
+                this.exportAllData();
+                break;
+            case 'breathing_exercise':
+                // Start focus timer
+                if (this.focusTimer) {
+                    this.focusTimer.start();
+                }
+                break;
+        }
+    }
+
+    // Enhanced message sending with new chatbot
+    sendEnhancedMessage() {
+        const message = this.chatInput.value.trim();
+        if (!message) return;
+        
+        this.chatInput.value = '';
+        this.enhancedChatbot.sendMessage(message);
+    }
+
+    // Export/Import methods
+    exportAllData() {
+        const result = this.dataManager.downloadExport();
+        if (result.success) {
+            this.showNotification('Export Successful', 'Your data has been downloaded');
+        }
+    }
+
+    importData(jsonString, strategy = 'replace') {
+        try {
+            const data = JSON.parse(jsonString);
+            const result = this.dataManager.importData(data, strategy);
+            
+            if (result.success) {
+                this.showNotification('Import Successful', 'Your data has been imported');
+                // Reload the page to reflect imported data
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                const errorMsg = result.errors ? result.errors.join(', ') : 'Import failed';
+                this.showNotification('Import Failed', errorMsg);
+            }
+        } catch (error) {
+            this.showNotification('Import Failed', 'Invalid JSON format');
+        }
     }
 
     // Initial Render

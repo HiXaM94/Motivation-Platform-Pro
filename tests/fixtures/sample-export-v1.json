@@ -1,0 +1,270 @@
+{
+  "version": "1.0.0",
+  "exportedAt": "2024-01-15T10:30:00.000Z",
+  "data": {
+    "goals": [
+      {
+        "id": "1705315800001",
+        "text": "Complete morning meditation session",
+        "category": "wellness",
+        "priority": "high",
+        "progress": 75,
+        "completed": false,
+        "subtasks": [
+          {
+            "id": "1705315800001_sub_1",
+            "text": "Set up meditation space",
+            "completed": true,
+            "createdAt": "2024-01-01T08:00:00.000Z"
+          },
+          {
+            "id": "1705315800001_sub_2",
+            "text": "Complete 10-minute session",
+            "completed": false,
+            "createdAt": "2024-01-01T08:00:00.000Z"
+          }
+        ],
+        "dueDate": "2024-01-20T00:00:00.000Z",
+        "recurring": {
+          "frequency": "daily",
+          "interval": 1
+        },
+        "tags": ["wellness", "daily", "meditation"],
+        "notes": "Practice mindfulness for 10 minutes each morning",
+        "createdAt": "2024-01-01T08:00:00.000Z",
+        "updatedAt": "2024-01-15T09:30:00.000Z"
+      },
+      {
+        "id": "1705315800002",
+        "text": "Read 30 pages of personal development book",
+        "category": "learning",
+        "priority": "medium",
+        "progress": 60,
+        "completed": false,
+        "subtasks": [],
+        "dueDate": null,
+        "recurring": null,
+        "tags": ["learning", "reading"],
+        "notes": "Currently reading 'Atomic Habits'",
+        "createdAt": "2024-01-02T10:00:00.000Z",
+        "updatedAt": "2024-01-15T11:00:00.000Z"
+      },
+      {
+        "id": "1705315800003",
+        "text": "Complete workout routine",
+        "category": "fitness",
+        "priority": "high",
+        "progress": 100,
+        "completed": true,
+        "subtasks": [],
+        "dueDate": "2024-01-15T00:00:00.000Z",
+        "recurring": {
+          "frequency": "weekly",
+          "interval": 3
+        },
+        "tags": ["fitness", "health"],
+        "notes": "30 minutes cardio + strength training",
+        "createdAt": "2024-01-01T07:00:00.000Z",
+        "updatedAt": "2024-01-15T08:00:00.000Z"
+      }
+    ],
+    "deletedGoals": [
+      {
+        "id": "1705315800999",
+        "text": "Old goal that was deleted",
+        "category": "general",
+        "priority": "low",
+        "progress": 20,
+        "completed": false,
+        "subtasks": [],
+        "dueDate": null,
+        "recurring": null,
+        "tags": [],
+        "notes": "",
+        "createdAt": "2023-12-15T10:00:00.000Z",
+        "updatedAt": "2023-12-20T10:00:00.000Z",
+        "deletedAt": "2024-01-10T12:00:00.000Z"
+      }
+    ],
+    "categories": [
+      {
+        "id": "general",
+        "name": "General",
+        "color": "#7c3aed"
+      },
+      {
+        "id": "work",
+        "name": "Work",
+        "color": "#ec4899"
+      },
+      {
+        "id": "personal",
+        "name": "Personal",
+        "color": "#06b6d4"
+      },
+      {
+        "id": "health",
+        "name": "Health",
+        "color": "#10b981"
+      },
+      {
+        "id": "learning",
+        "name": "Learning",
+        "color": "#f59e0b"
+      },
+      {
+        "id": "fitness",
+        "name": "Fitness",
+        "color": "#ef4444"
+      },
+      {
+        "id": "wellness",
+        "name": "Wellness",
+        "color": "#8b5cf6"
+      }
+    ],
+    "stats": {
+      "currentStreak": 7,
+      "longestStreak": 14,
+      "totalGoalsCompleted": 25,
+      "productivityScore": 84,
+      "lastVisit": "2024-01-15T10:00:00.000Z",
+      "quotesViewed": 50
+    },
+    "journalEntries": [
+      {
+        "id": "journal_1705315800001",
+        "content": "Today was a productive day. I completed my morning meditation and felt more focused throughout the day. Looking forward to maintaining this momentum.",
+        "date": "January 15, 2024, 10:30 AM",
+        "originalContent": null,
+        "timestamp": 1705315800000
+      },
+      {
+        "id": "journal_1705229400001",
+        "content": "Feeling grateful for the progress I've made this week. Small steps are adding up to big changes.",
+        "date": "January 14, 2024, 6:30 PM",
+        "originalContent": null,
+        "timestamp": 1705229400000
+      }
+    ],
+    "inspirationBookmarks": [
+      {
+        "id": "mock_1",
+        "type": "video",
+        "title": "Morning Motivation - Start Your Day Right",
+        "description": "Powerful morning routine to kickstart your day with energy and purpose",
+        "thumbnail": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&q=80",
+        "videoId": "dQw4w9WgXcQ",
+        "duration": "10:32",
+        "views": "1.2M",
+        "source": "YouTube",
+        "category": "morning",
+        "tags": ["motivation", "morning", "routine"],
+        "bookmarkedAt": "2024-01-14T15:00:00.000Z"
+      }
+    ],
+    "dailyChecklist": {
+      "2024-01-15": {
+        "date": "2024-01-15T00:00:00.000Z",
+        "items": [
+          {
+            "id": "check_1705315800001",
+            "text": "Morning meditation",
+            "completed": true,
+            "createdAt": "2024-01-15T06:00:00.000Z",
+            "completedAt": "2024-01-15T07:30:00.000Z"
+          },
+          {
+            "id": "check_1705315800002",
+            "text": "Healthy breakfast",
+            "completed": true,
+            "createdAt": "2024-01-15T06:00:00.000Z",
+            "completedAt": "2024-01-15T08:00:00.000Z"
+          },
+          {
+            "id": "check_1705315800003",
+            "text": "Review daily goals",
+            "completed": false,
+            "createdAt": "2024-01-15T06:00:00.000Z",
+            "completedAt": null
+          }
+        ],
+        "completed": false
+      },
+      "2024-01-14": {
+        "date": "2024-01-14T00:00:00.000Z",
+        "items": [
+          {
+            "id": "check_1705229400001",
+            "text": "Morning meditation",
+            "completed": true,
+            "createdAt": "2024-01-14T06:00:00.000Z",
+            "completedAt": "2024-01-14T07:15:00.000Z"
+          }
+        ],
+        "completed": true
+      }
+    },
+    "moodHistory": [
+      {
+        "date": "2024-01-15T10:00:00.000Z",
+        "dateKey": "2024-01-15",
+        "mood": 4,
+        "notes": "Feeling great and productive!",
+        "timestamp": 1705315800000
+      },
+      {
+        "date": "2024-01-14T18:00:00.000Z",
+        "dateKey": "2024-01-14",
+        "mood": 5,
+        "notes": "Excellent day, accomplished all my goals",
+        "timestamp": 1705258800000
+      },
+      {
+        "date": "2024-01-13T19:00:00.000Z",
+        "dateKey": "2024-01-13",
+        "mood": 3,
+        "notes": "Neutral day, some challenges but staying positive",
+        "timestamp": 1705172400000
+      }
+    ],
+    "streakData": {
+      "currentStreak": 7,
+      "longestStreak": 14,
+      "totalCompletions": 50,
+      "lastCompletionDate": "2024-01-15"
+    },
+    "achievements": [
+      {
+        "id": "week_warrior",
+        "title": "Week Warrior",
+        "description": "Maintained a 7-day streak",
+        "unlockedAt": "2024-01-08T00:00:00.000Z",
+        "icon": "🔥"
+      },
+      {
+        "id": "getting_started",
+        "title": "Getting Started",
+        "description": "Completed 10 daily checklists",
+        "unlockedAt": "2024-01-05T00:00:00.000Z",
+        "icon": "🌟"
+      },
+      {
+        "id": "mood_tracker",
+        "title": "Mood Tracker",
+        "description": "Tracked mood for 30 days",
+        "unlockedAt": "2024-01-10T00:00:00.000Z",
+        "icon": "😊"
+      }
+    ],
+    "settings": {
+      "autoBackupEnabled": true,
+      "enableRealtimeFeed": true,
+      "youtubeApiKey": "",
+      "youtubeSearchQuery": "motivation success mindset",
+      "notificationsEnabled": false,
+      "backupFrequency": 24
+    },
+    "theme": "light"
+  }
+}
