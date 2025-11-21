@@ -6,11 +6,13 @@
  */
 
 class ChatbotService {
-    constructor(baseUrl = '') {
+    constructor(baseUrl = '', options = {}) {
         // Use relative path if no baseUrl provided (works for same-origin)
         // For different origins, set baseUrl to server URL
         this.baseUrl = baseUrl;
         this.conversationHistory = [];
+        // Allow configurable history limit, default to 20 messages (10 exchanges)
+        this.maxHistoryLength = options.maxHistoryLength || 20;
     }
 
     /**
@@ -53,9 +55,9 @@ class ChatbotService {
                     { role: 'assistant', content: data.response }
                 );
 
-                // Limit history to last 10 exchanges (20 messages)
-                if (this.conversationHistory.length > 20) {
-                    this.conversationHistory = this.conversationHistory.slice(-20);
+                // Limit history to configured max length
+                if (this.conversationHistory.length > this.maxHistoryLength) {
+                    this.conversationHistory = this.conversationHistory.slice(-this.maxHistoryLength);
                 }
             }
 

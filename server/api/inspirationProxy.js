@@ -63,7 +63,19 @@ function getMockInspirationItems() {
  * @param {number} maxResults - Maximum results to return
  */
 async function fetchYouTubeInspiration(apiKey, query = 'motivation', maxResults = 10) {
-    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=${maxResults}&order=relevance&key=${apiKey}`;
+    // Build URL without including API key in logged strings
+    const params = new URLSearchParams({
+        part: 'snippet',
+        q: query,
+        type: 'video',
+        maxResults: maxResults.toString(),
+        order: 'relevance'
+    });
+    
+    const url = `https://www.googleapis.com/youtube/v3/search?${params.toString()}&key=${apiKey}`;
+    
+    // Note: Never log the full URL as it contains the API key
+    console.log(`[YouTube API] Fetching: query="${query}", maxResults=${maxResults}`);
     
     const response = await fetch(url);
     

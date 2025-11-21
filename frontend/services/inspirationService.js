@@ -6,13 +6,14 @@
  */
 
 class InspirationService {
-    constructor(baseUrl = '') {
+    constructor(baseUrl = '', options = {}) {
         // Use relative path if no baseUrl provided (works for same-origin)
         // For different origins, set baseUrl to server URL
         this.baseUrl = baseUrl;
         this.cache = null;
         this.cacheTimestamp = null;
-        this.cacheDuration = 5 * 60 * 1000; // 5 minutes cache
+        // Allow configurable cache duration, default to 5 minutes
+        this.cacheDuration = options.cacheDuration || 5 * 60 * 1000;
     }
 
     /**
