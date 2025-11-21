@@ -1,0 +1,26 @@
+{
+  "name": "motivation-platform-pro",
+  "version": "1.0.0",
+  "description": "Advanced Daily Motivation Platform with OpenAI and YouTube integration",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Tests will be added in follow-up PRs\" && exit 0",
+    "dev": "echo \"Development server setup coming in follow-up PRs\""
+  },
+  "keywords": [
+    "motivation",
+    "productivity",
+    "goals",
+    "openai",
+    "youtube"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "openai": "^4.20.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
