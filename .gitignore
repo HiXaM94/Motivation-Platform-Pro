@@ -29,6 +29,9 @@ tmp/
 temp/
 *.tmp
 
+# Test files (for development only)
+test-api.html
+
 # OS generated files
 Thumbs.db
 .DS_Store
